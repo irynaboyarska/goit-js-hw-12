@@ -16,15 +16,17 @@ let currentQuery;
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const query = e.target.elements['search-text'].value.trim();
-    currentQuery = query;
-    page = 1;
 
   if (!query) {
     iziToast.error({ title: 'Error', message: 'Please enter a search term!' });
     return;
   }
+  
+  currentQuery = query;
+  page = 1;
 
   clearGallery();
+  hideLoadMoreButton();
   showLoader();
 
   try {
@@ -72,6 +74,7 @@ form.addEventListener('submit', async (e) => {
 loadMoreBtn.addEventListener('click', async () => {
     page += 1;
 
+    hideLoadMoreButton();
     showLoader();
 
     try {
@@ -101,6 +104,12 @@ loadMoreBtn.addEventListener('click', async () => {
         });
     } catch(err){
         console.error(err);
+        iziToast.error({
+            title: 'Error',
+            message: 'Something went wrong. Please try again!',
+            position: 'topRight',
+            timeout: 4000,
+        })
     } finally {
         hideLoader();
     }
